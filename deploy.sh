@@ -1,10 +1,12 @@
-export AWS_CONFIG_FILE=$HOME/.aws/config
+#!/usr/bin/env bash
 
-# Empty bucket
-# aws s3 rm s3://sangeeta.io --recursive
+OUTPUT_DIR="$HOME/Code/sangeeta.io"
+echo $OUTPUT_DIR
 
-# Initial deploy to S3
-aws s3 sync ./_site s3://sangeeta.io
+bundle exec jekyll build -d $OUTPUT_DIR
+cd $OUTPUT_DIR
+git add -A
+git commit -m "Update blog"
+git push origin master
 
-# Sync without copying emoji Directory
-aws s3 sync ./_site s3://sangeeta.io --exclude "images/*"
+
