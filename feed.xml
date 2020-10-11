@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<title>sangeeta.io</title>
+		<description>{&quot;meta&quot;=&gt;&quot;Sangeeta's personal coding blog.&quot;, &quot;subtitle&quot;=&gt;&quot;&quot;}</description>
+		<link>https://sangeeta.io</link>
+		<atom:link href="https://sangeeta.io/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Managing environments with Express &amp; Serverless</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>Learn to easily manage both dev and prod serverless environments.</description>
+				
+				<pubDate>Wed, 01 May 2019 00:00:00 -0400</pubDate>
+				<link>https://sangeeta.io/posts/managing-environments-with-express-serverless/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/managing-environments-with-express-serverless/</guid>
+			</item>
+		
+			<item>
+				<title>Python Context Managers</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>What are context managers and what are they useful for?</description>
+				
+				<pubDate>Fri, 02 Mar 2018 00:00:00 -0500</pubDate>
+				<link>https://sangeeta.io/posts/python-context-managers/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/python-context-managers/</guid>
+			</item>
+		
+			<item>
+				<title>Begone, .DS_Store!</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>Learn a quick trick on how to remove these files from your project.</description>
+				
+				<pubDate>Sat, 03 Feb 2018 00:00:00 -0500</pubDate>
+				<link>https://sangeeta.io/posts/begone-ds-store/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/begone-ds-store/</guid>
+			</item>
+		
+			<item>
+				<title>My First Blog Post</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>Hello there!</description>
+				
+				<pubDate>Sat, 03 Feb 2018 00:00:00 -0500</pubDate>
+				<link>https://sangeeta.io/posts/my-first-blog-post/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/my-first-blog-post/</guid>
+			</item>
+		
+	</channel>
+</rss>

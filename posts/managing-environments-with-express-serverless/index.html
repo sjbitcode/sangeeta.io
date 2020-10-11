@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+Managing environments with Express & Serverless • sangeeta.io
+
+</title>
+<meta name="description" content=" Sangeeta's personal coding blog.">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#ff95d0">
+<meta name="msapplication-TileColor" content="#ff95d0">
+<meta name="msapplication-TileImage" content="/mstile-150x150.png">
+<!-- /icons -->
+
+<!-- og tags -->
+<meta property="og:site_name" content="sangeeta.io">
+<meta property="og:title" content="Managing environments with Express & Serverless • sangeeta.io">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="og:image" content="https://sangeeta.io/img/og-image.jpg">
+  
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangeeta.io/posts/managing-environments-with-express-serverless/">
+<meta property="og:description" content="
+
+Sangeeta's personal coding blog.
+">
+<!-- /og tags -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+<link href="/css/syntax.css" rel="stylesheet" >
+
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+  
+
+
+
+
+
+
+
+<!-- Don't show the dot before first article on home page -->
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+<!-- -->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+
+    
+    sangeeta.io
+
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/blog/">Blog</a>
+  <a href="/contact/">Contact</a>
+  <a href="/archive/">Archive</a>
+</nav>
+
+</header>
+
+		
+
+
+<article>
+  <span class="meta">May 1, 2019 • 11 min read</span>
+  <h1>Managing environments with Express &amp; Serverless</h1>
+  <span class="tag-container">
+    
+        
+        <a href="/tag/node" class="post-tag"><nobr>node</nobr> </a>
+    
+        
+        <a href="/tag/express" class="post-tag"><nobr>express</nobr> </a>
+    
+        
+        <a href="/tag/lambda" class="post-tag"><nobr>lambda</nobr> </a>
+    
+        
+        <a href="/tag/javascript" class="post-tag"><nobr>javascript</nobr> </a>
+    
+  </span>
+  <p>I recently worked on a Node Express API that tracks all holidays in the United States in 2019.</p>
+
+<p>During development, I used a MongoDB Docker container and ran the Express API locally. For production, I imported all my data to a free Mongo Atlas instance, and deployed the API on an AWS Lambda function. I went with this approach for the obvious benefits that AWS Lambda provides – only running your code when a user visits your site. Goodbye 24/7 server fees! 💸</p>
+
+<p>During the process of deploying my API to Lambda using the Serverless framework, I realized three things:</p>
+
+<ol>
+  <li>I needed to load my environment variables in my lambda function 😨</li>
+  <li>I didn’t want my “prod” lambda endpoint to end with <code class="language-plaintext highlighter-rouge">/dev/</code> (<em>more on this later</em>) 😕</li>
+  <li>I needed to reference the lambda API Gateway URL from within my app 😬</li>
+</ol>
+
+<p>As I worked through these, I realized that the common theme was simply managing multiple development environments! We can rewrite the above to better define our goals:</p>
+
+<ol>
+  <li>Load app environment variables into lambda  <em>based on development environment</em>
+</li>
+  <li>
+<em>Handle different environments</em> in our Serverless config</li>
+  <li>Export environment variables defined with Serverless back to app  <em>based on development environment</em>
+</li>
+</ol>
+
+<p>Starting to sound repetitive yet? <img class="emoji" title=":trollface:" alt=":trollface:" src="https://github.githubassets.com/images/icons/emoji/trollface.png" height="20" width="20"></p>
+
+<p>I solved this using the <a href="https://www.npmjs.com/package/serverless-dotenv-plugin" target="_blank">serverless-dotenv-plugin</a> and <a href="http://www.goingserverless.com/blog/api-gateway-url" target="_blank">this</a> article. I’ll show you how I set up my serverless configuration with the plugin and some tips on what I learned along the way.</p>
+
+<hr>
+<p>For demonstrative purposes, I’ve made a bare bones node express serverless app which you can refer to <a href="https://github.com/sjbitcode/serverless-express-example" target="_blank">here</a>. For the remainder of this article, I’ll be referencing this project.</p>
+
+<p>The folder structure looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── .gitignore
+├── config
+│   ├── .env
+│   └── .env.production
+├── handler.js
+├── package-lock.json
+├── package.json
+├── serverless.yml
+└── src
+    ├── app.js
+    └── index.js
+</code></pre></div></div>
+
+<p><em>Disclaimer:</em> The following is not meant to be a tutorial, just an overview and some commentary along the way! ✨</p>
+
+<h3 id="src">src</h3>
+<p>The src directory holds our application code.</p>
+
+<p>Our express app is defined within <code class="language-plaintext highlighter-rouge">app.js</code>, and we run it within <code class="language-plaintext highlighter-rouge">index.js</code>. Some reasons for doing this is to have the app easily accessible by itself for testing and passing it to serverless to handle requests.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// src/app.js</span>
+<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">()</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">env</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">NODE_ENV</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s2">`Hello World! We're in </span><span class="p">${</span><span class="nx">env</span><span class="p">}</span><span class="s2">!`</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">app</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// src/index.js</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./app</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`App listening on port </span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">`</span><span class="p">)</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>Another benefit is that our workflow sans serverless remains intact. We can still run package.json scripts like <code class="language-plaintext highlighter-rouge">npm run dev</code>. In this example, I use <a href="https://www.npmjs.com/package/env-cmd" target="_blank">env-cmd</a> to handle environment variables and <a href="https://www.npmjs.com/package/nodemon" target="_blank">nodemon</a> to automatically restart the process.</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"env-cmd -f ./config/.env nodemon src/index.js"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<h3 id="config">config</h3>
+<p>The config directory holds our .env files. In this example there’s two env files, <code class="language-plaintext highlighter-rouge">.env</code> for development and <code class="language-plaintext highlighter-rouge">.env.production</code> for production.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># config/.env</span>
+
+<span class="nv">PORT</span><span class="o">=</span>3000
+<span class="nv">NODE_ENV</span><span class="o">=</span>development
+<span class="nv">DB_URL</span><span class="o">=</span>your-dev-db-url
+<span class="nv">DB_NAME</span><span class="o">=</span>your-dev-db-name
+
+<span class="c"># serverless</span>
+<span class="nv">STAGE</span><span class="o">=</span>dev
+<span class="nv">REGION</span><span class="o">=</span>us-east-1</code></pre></figure>
+
+<h3 id="handlerjs">handler.js</h3>
+<p>The handler script imports our app from <code class="language-plaintext highlighter-rouge">src/</code> and wraps it for serverless use within <code class="language-plaintext highlighter-rouge">serverless.yml</code>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">const</span> <span class="nx">sls</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">serverless-http</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">./src/app</span><span class="dl">'</span><span class="p">)</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">server</span> <span class="o">=</span> <span class="nx">sls</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span></code></pre></figure>
+
+<h3 id="serverlessyml">serverless.yml</h3>
+<p>Finally, we can tie everything together in the <code class="language-plaintext highlighter-rouge">serverless.yml</code> file to configure our lambda function.</p>
+
+<p>Without loading our env files just yet, our <code class="language-plaintext highlighter-rouge">serverless.yml</code> would look like this</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">service</span><span class="pi">:</span> <span class="s">serverless-express</span>
+
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">aws</span>
+  <span class="na">runtime</span><span class="pi">:</span> <span class="s">nodejs8.10</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">dev</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">us-east-1</span>
+
+
+<span class="na">functions</span><span class="pi">:</span>
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">handler</span><span class="pi">:</span> <span class="s">handler.server</span>
+    <span class="na">events</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/{proxy+}</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span></code></pre></figure>
+
+<p>But we need to manage our enviroments! To load our environment variables into our lambda function, we use the <a href="https://www.npmjs.com/package/serverless-dotenv-plugin" target="_blank">serverless-dotenv-plugin</a>. In our <code class="language-plaintext highlighter-rouge">serverless.yml</code> file, we define a custom section and add a variable called <code class="language-plaintext highlighter-rouge">dotenv</code> to use the plugin.</p>
+
+<p>This plugin supports a <em>basePath</em> option to point to a directory with multiple env files (our config directory). We access the variables we need for this configuration by <code class="language-plaintext highlighter-rouge">${env:SOME-VAR}</code>.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">service</span><span class="pi">:</span> <span class="s">serverless-express</span>
+
+
+<span class="na">custom</span><span class="pi">:</span>
+  <span class="na">dotenv</span><span class="pi">:</span>
+    <span class="na">basePath</span><span class="pi">:</span> <span class="s">./config/</span>
+
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">aws</span>
+  <span class="na">runtime</span><span class="pi">:</span> <span class="s">nodejs8.10</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${env:STAGE}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${env:REGION}</span>
+
+
+<span class="na">functions</span><span class="pi">:</span>
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">handler</span><span class="pi">:</span> <span class="s">handler.server</span>
+    <span class="na">events</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/{proxy+}</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span>
+
+
+<span class="na">plugins</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">serverless-dotenv-plugin</span></code></pre></figure>
+
+<h5 id="quick-note-about-stages">Quick note about stages</h5>
+<p>Stages in the Serverless framework allows us to create different environments for our app. If the stage is not defined in the <code class="language-plaintext highlighter-rouge">serverless.yml</code> file, then Serverless will automatically default the stage to <code class="language-plaintext highlighter-rouge">dev</code>.</p>
+
+<p>Typically, we want to test our lambda independently of our production environment, hence the reason to dynamically set the stage based on our development environment. When we do this, the Serverless framework creates a different API Gateway project and we get a different endpoint host.</p>
+
+<p>To test our lambda app locally, we can use the <a href="https://www.npmjs.com/package/serverless-offline" target="_blank">serverless-offline plugin</a>. Make sure to update the plugins section in the <code class="language-plaintext highlighter-rouge">serverless.yml</code> file.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">plugins</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">serverless-dotenv-plugin</span>
+  <span class="pi">-</span> <span class="s">serverless-offline</span></code></pre></figure>
+
+<h3 id="deploying">Deploying</h3>
+<p>To deploy our app and use our production environment variables we run the serverless deploy command with <code class="language-plaintext highlighter-rouge">NODE_ENV</code>. The serverless-dotenv-plugin will look for a file called <code class="language-plaintext highlighter-rouge">.env.{ENV}</code>. If we don’t pass the <code class="language-plaintext highlighter-rouge">NODE_ENV</code> argument, the plugin will look for a <code class="language-plaintext highlighter-rouge">.env.development</code> file or default to <code class="language-plaintext highlighter-rouge">.env</code>.</p>
+
+<p>To deploy the production version of our app, we run <code class="language-plaintext highlighter-rouge">NODE_ENV=production sls deploy</code> or <code class="language-plaintext highlighter-rouge">sls deploy --env production</code> if the first doesn’t work.</p>
+
+<p>To run the lambda offline, we run <code class="language-plaintext highlighter-rouge">sls offine</code>. This will use our development environment variables.</p>
+
+<h4 id="gateway-url-inside-app">Gateway URL inside app</h4>
+<p>What if you need the API Gateway URL within your application? For example, I wanted my holiday API to return an endpoint to view a holiday’s details for each holiday.</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"holidays"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some-id"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"New Year's Day"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Federal Holiday"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-01-01"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"detailUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://l922n1th0f.execute-api.us-east-1.amazonaws.com/prod/holidays/some-id"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>To achieve this, we need to reconstruct the API Gateway URL with a combination of Serverless variables and CloudFormation (read this <a href="http://www.goingserverless.com/blog/api-gateway-url" target="_blank">article</a>) so that we can use it as an environment variable in our app like <code class="language-plaintext highlighter-rouge">process.env.GATEWAY_URL</code>. We will only need to modify the provider and custom sections of the <code class="language-plaintext highlighter-rouge">serverless.yml</code> file.</p>
+
+<p>So far, those sections look like this:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">custom</span><span class="pi">:</span>
+  <span class="na">dotenv</span><span class="pi">:</span>
+    <span class="na">basePath</span><span class="pi">:</span> <span class="s">./config/</span>
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">aws</span>
+  <span class="na">runtime</span><span class="pi">:</span> <span class="s">nodejs8.10</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${env:STAGE}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${env:REGION}</span></code></pre></figure>
+
+<p>We define an environment variable <code class="language-plaintext highlighter-rouge">GATEWAY_URL</code> in the provider section of our <code class="language-plaintext highlighter-rouge">serverless.yml</code> file. This variable will depend on what stage we’re using. For production, we’ll construct the url. For development, we’ll use <code class="language-plaintext highlighter-rouge">localhost:3000</code>. To do this elegantly, our provider <code class="language-plaintext highlighter-rouge">GATEWAY_URL</code> will reference a variable of the same name in the custom section under a specific stage.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">custom</span><span class="pi">:</span>
+  <span class="na">prod</span><span class="pi">:</span>
+    <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="pi">{</span> <span class="s2">"</span><span class="s">Fn::Join"</span> <span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">"</span><span class="pi">,</span> <span class="pi">[</span> <span class="s2">"</span><span class="s">https://"</span><span class="pi">,</span> <span class="pi">{</span> <span class="s2">"</span><span class="s">Ref"</span> <span class="pi">:</span> <span class="s2">"</span><span class="s">ApiGatewayRestApi"</span> <span class="pi">},</span> <span class="s2">"</span><span class="s">.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}"</span> <span class="pi">]</span> <span class="pi">]</span>  <span class="pi">}</span>
+  <span class="na">dev</span><span class="pi">:</span>
+    <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="s2">"</span><span class="s">localhost:3000"</span>
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="s">${self.custom.${self:custom.stage}.GATEWAY_URL}</span></code></pre></figure>
+
+<p>You might notice that the custom prod <code class="language-plaintext highlighter-rouge">GATEWAY_URL</code> uses the <em>stage</em> and <em>region</em> values from the custom section itself.</p>
+
+<p>Since we originally read those values from our env files with the dotenv plugin in the provider section, we can copy the references to the custom section whilst keeping the variables in the provider section. Then, in the provider we just reference their values from custom.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">custom</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${env:STAGE}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${env:REGION}</span>
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${self:custom.stage}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${self:custom.region}</span></code></pre></figure>
+
+<p>Now, we’re done! Here’s a look at the final <code class="language-plaintext highlighter-rouge">serverless.yml</code>:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">service</span><span class="pi">:</span> <span class="s">serverless-express</span>
+
+
+<span class="na">custom</span><span class="pi">:</span>
+  <span class="na">dotenv</span><span class="pi">:</span>
+    <span class="na">basePath</span><span class="pi">:</span> <span class="s">./config/</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${env:STAGE}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${env:REGION}</span>
+  <span class="na">prod</span><span class="pi">:</span>
+    <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="pi">{</span> <span class="s2">"</span><span class="s">Fn::Join"</span> <span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">"</span><span class="pi">,</span> <span class="pi">[</span> <span class="s2">"</span><span class="s">https://"</span><span class="pi">,</span> <span class="pi">{</span> <span class="s2">"</span><span class="s">Ref"</span> <span class="pi">:</span> <span class="s2">"</span><span class="s">ApiGatewayRestApi"</span> <span class="pi">},</span> <span class="s2">"</span><span class="s">.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}"</span> <span class="pi">]</span> <span class="pi">]</span>  <span class="pi">}</span>
+  <span class="na">dev</span><span class="pi">:</span>
+    <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://localhost:3000"</span>
+
+<span class="na">provider</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">aws</span>
+  <span class="na">runtime</span><span class="pi">:</span> <span class="s">nodejs8.10</span>
+  <span class="na">stage</span><span class="pi">:</span> <span class="s">${self:custom.stage}</span>
+  <span class="na">region</span><span class="pi">:</span> <span class="s">${self:custom.region}</span>
+  <span class="na">environment</span><span class="pi">:</span>
+    <span class="na">GATEWAY_URL</span><span class="pi">:</span> <span class="s">${self:custom.${self:custom.stage}.GATEWAY_URL}</span>
+
+<span class="na">functions</span><span class="pi">:</span>
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">handler</span><span class="pi">:</span> <span class="s">handler.server</span>
+    <span class="na">events</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="pi">-</span> <span class="na">http</span><span class="pi">:</span>
+          <span class="na">path</span><span class="pi">:</span> <span class="s">/{proxy+}</span>
+          <span class="na">method</span><span class="pi">:</span> <span class="s">ANY</span>
+          <span class="na">cors</span><span class="pi">:</span> <span class="no">true</span>
+
+<span class="na">plugins</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">serverless-offline</span>
+  <span class="pi">-</span> <span class="s">serverless-dotenv-plugin</span></code></pre></figure>
+
+<p>Now, you can access the API Gateway URL from within your app as an environment variable. Remember that when developing locally without serverless-offline, <code class="language-plaintext highlighter-rouge">process.env.GATEWAY_URL</code> does not exist, so handle accordingly:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">app</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">gatewayUrl</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">GATEWAY_URL</span> <span class="o">||</span> <span class="dl">'</span><span class="s1">localhost:3000</span><span class="dl">'</span>
+  <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">users_list</span><span class="p">:</span> <span class="s2">`</span><span class="p">${</span><span class="nx">gatewayUrl</span><span class="p">}</span><span class="s2">/users`</span>
+  <span class="p">}</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">200</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span>
+<span class="p">})</span></code></pre></figure>
+
+
+  <!-- <br><br> -->
+  <!-- 
+    
+      
+        <small><em>Post by: Sangeeta Jadoonanan </em></small>
+      
+    
+   -->
+</article>
+
+<div class="author-footer-container">
+    <hr>
+    <div class="author-footer">
+    
+      <img alt="sangeeta.io" src="/images/sangeeta_profile_pic.jpeg">
+    
+    <p>
+        <strong>Sangeeta Jadoonanan</strong>'s personal blog.
+        All thoughts and opinions are solely mine, please do your own googling and only copy paste from highly upvoted StackOverflow answers 😏
+    </p>
+</div>
+</div>
+
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'https-sangeeta-io'; // Required - Replace '<example>' with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+</noscript>
+
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	<footer>
+  <div class="inner">
+    <p>
+      <a class="fa fa-twitter" href="http://twitter.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      
+      <a class="fa fa-linkedin" href="http://linkedin.com/in/sjbitcode" target="_blank"></a>
+      <a class="fa fa-github" href="http://github.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      <br>
+      Sangeeta Jadoonanan © <script>new Date().getFullYear()&&document.write(new Date().getFullYear());</script>  • <a href="https://github.com/stijnvc/holo-alfa" target="_blank">Holo Alfa</a> theme ❤️
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

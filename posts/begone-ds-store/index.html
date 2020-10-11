@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+Begone, .DS_Store! • sangeeta.io
+
+</title>
+<meta name="description" content=" Sangeeta's personal coding blog.">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#ff95d0">
+<meta name="msapplication-TileColor" content="#ff95d0">
+<meta name="msapplication-TileImage" content="/mstile-150x150.png">
+<!-- /icons -->
+
+<!-- og tags -->
+<meta property="og:site_name" content="sangeeta.io">
+<meta property="og:title" content="Begone, .DS_Store! • sangeeta.io">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="og:image" content="https://sangeeta.io/img/og-image.jpg">
+  
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangeeta.io/posts/begone-ds-store/">
+<meta property="og:description" content="
+
+Sangeeta's personal coding blog.
+">
+<!-- /og tags -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+<link href="/css/syntax.css" rel="stylesheet" >
+
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+  
+
+
+
+
+
+
+
+<!-- Don't show the dot before first article on home page -->
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+<!-- -->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+
+    
+    sangeeta.io
+
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/blog/">Blog</a>
+  <a href="/contact/">Contact</a>
+  <a href="/archive/">Archive</a>
+</nav>
+
+</header>
+
+		
+
+
+<article>
+  <span class="meta">Feb 3, 2018 • Less than a minute read</span>
+  <h1>Begone, .DS_Store!</h1>
+  <span class="tag-container">
+    
+        
+        <a href="/tag/bash" class="post-tag"><nobr>bash</nobr>&nbsp;</a>
+    
+  </span>
+  <p><code class="language-plaintext highlighter-rouge">.DS_Store</code> files are hidden files created in every directory in Mac OS X. They contain certain attributes and metadata about the directory in which they reside. Sometimes they can inadvertently end up in commits, which is quite annoying! Here’s a quick tip to remove all <code class="language-plaintext highlighter-rouge">.DS_Store</code> files from a directory.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">find <span class="nb">.</span> <span class="nt">-name</span> <span class="s2">"*.DS_Store"</span> <span class="nt">-print0</span>|xargs <span class="nt">-0</span> <span class="nb">rm</span></code></pre></figure>
+
+<p>Furthermore, you can set this command as an alias and add it to your <code class="language-plaintext highlighter-rouge">.bash_profile</code>. If you do, just remember to restart your bash shell with <code class="language-plaintext highlighter-rouge">exec -l bash</code>.</p>
+
+  <!-- <br><br> -->
+  <!-- 
+    
+      
+        <small><em>Post by: Sangeeta Jadoonanan </em></small>
+      
+    
+   -->
+</article>
+
+<div class="author-footer-container">
+    <hr>
+    <div class="author-footer">
+    
+      <img alt="sangeeta.io" src="/images/sangeeta_profile_pic.jpeg">
+    
+    <p>
+        <strong>Sangeeta Jadoonanan</strong>'s personal blog.
+        All thoughts and opinions are solely mine, please do your own googling and only copy paste from highly upvoted StackOverflow answers 😏
+    </p>
+</div>
+</div>
+
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'https-sangeeta-io'; // Required - Replace '<example>' with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	<footer>
+  <div class="inner">
+    <p>
+      <a class="fa fa-twitter" href="http://twitter.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      
+      <a class="fa fa-linkedin" href="http://linkedin.com/in/sjbitcode" target="_blank"></a>
+      <a class="fa fa-github" href="http://github.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      <br>
+      Sangeeta Jadoonanan &copy; <script>new Date().getFullYear()&&document.write(new Date().getFullYear());</script>  • <a href="https://github.com/stijnvc/holo-alfa" target="_blank">Holo Alfa</a> theme ❤️
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
