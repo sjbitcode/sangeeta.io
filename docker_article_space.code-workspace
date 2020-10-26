@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../pandas-bootcamp"
+		},
+		{
+			"path": "../pystuff"
+		},
+		{
+			"path": "../django_hello_world"
+		}
+	],
+	"settings": {}
+}

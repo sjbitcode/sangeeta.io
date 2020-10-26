@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
+        <loc>https://sangeeta.io/posts/running-jupyter-with-docker/</loc>
+    </url>
+    
+    <url>
         <loc>https://sangeeta.io/posts/managing-environments-with-express-serverless/</loc>
     </url>
     
@@ -73,6 +77,16 @@
     
     
     <url>
+        <loc>https://sangeeta.io/tag/docker/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
         <loc>https://sangeeta.io/tag/express/</loc>
     </url>
     
@@ -106,6 +120,16 @@
     
     <url>
         <loc>https://sangeeta.io/tag/javascript/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://sangeeta.io/tag/jupyter/</loc>
     </url>
     
     

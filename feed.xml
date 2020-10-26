@@ -7,6 +7,19 @@
 		<atom:link href="https://sangeeta.io/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Running Jupyter with Docker</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>Tips on running a Jupyter docker image.</description>
+				
+				<pubDate>Wed, 14 Oct 2020 00:00:00 -0400</pubDate>
+				<link>https://sangeeta.io/posts/running-jupyter-with-docker/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/running-jupyter-with-docker/</guid>
+			</item>
+		
+			<item>
 				<title>Managing environments with Express &amp; Serverless</title>
 				
 					<dc:creator>sangeeta</dc:creator>
