@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width">
 <title>
 
-Managing environments with Express & Serverless • sangeeta.io
+Environments with Express & Serverless • sangeeta.io
 
 </title>
 <meta name="description" content=" Sangeeta's personal coding blog.">
@@ -23,11 +23,11 @@ Managing environments with Express & Serverless • sangeeta.io
 
 <!-- og tags -->
 <meta property="og:site_name" content="sangeeta.io">
-<meta property="og:title" content="Managing environments with Express & Serverless • sangeeta.io">
+<meta property="og:title" content="Environments with Express & Serverless • sangeeta.io">
 <meta property="og:locale" content="en">
 
   
-    <meta property="og:image" content="https://sangeeta.io/images/og-image.jpg">
+    <meta property="og:image" content="https://sangeeta.io/images/og-image.png">
   
 
 <meta property="og:type" content="website">
@@ -126,21 +126,21 @@ header::after {
 
 
 <article>
-  <span class="meta">May 1, 2019 • 11 min read</span>
-  <h1>Managing environments with Express &amp; Serverless</h1>
+  <span class="meta">May 1, 2019 • 11&nbsp;min read</span>
+  <h1>Environments with Express & Serverless</h1>
   <span class="tag-container">
     
         
-        <a href="/tag/node" class="post-tag"><nobr>node</nobr> </a>
+        <a href="/tag/node" class="post-tag"><nobr>node</nobr>&nbsp;</a>
     
         
-        <a href="/tag/express" class="post-tag"><nobr>express</nobr> </a>
+        <a href="/tag/express" class="post-tag"><nobr>express</nobr>&nbsp;</a>
     
         
-        <a href="/tag/lambda" class="post-tag"><nobr>lambda</nobr> </a>
+        <a href="/tag/lambda" class="post-tag"><nobr>lambda</nobr>&nbsp;</a>
     
         
-        <a href="/tag/javascript" class="post-tag"><nobr>javascript</nobr> </a>
+        <a href="/tag/javascript" class="post-tag"><nobr>javascript</nobr>&nbsp;</a>
     
   </span>
   <p>I recently worked on a Node Express API that tracks all holidays in the United States in 2019.</p>
@@ -158,19 +158,16 @@ header::after {
 <p>As I worked through these, I realized that the common theme was simply managing multiple development environments! We can rewrite the above to better define our goals:</p>
 
 <ol>
-  <li>Load app environment variables into lambda  <em>based on development environment</em>
-</li>
-  <li>
-<em>Handle different environments</em> in our Serverless config</li>
-  <li>Export environment variables defined with Serverless back to app  <em>based on development environment</em>
-</li>
+  <li>Load app environment variables into lambda  <em>based on development environment</em></li>
+  <li><em>Handle different environments</em> in our Serverless config</li>
+  <li>Export environment variables defined with Serverless back to app  <em>based on development environment</em></li>
 </ol>
 
-<p>Starting to sound repetitive yet? <img class="emoji" title=":trollface:" alt=":trollface:" src="https://github.githubassets.com/images/icons/emoji/trollface.png" height="20" width="20"></p>
+<p>Starting to sound repetitive yet?</p>
 
 <p>I solved this using the <a href="https://www.npmjs.com/package/serverless-dotenv-plugin" target="_blank">serverless-dotenv-plugin</a> and <a href="http://www.goingserverless.com/blog/api-gateway-url" target="_blank">this</a> article. I’ll show you how I set up my serverless configuration with the plugin and some tips on what I learned along the way.</p>
 
-<hr>
+<hr />
 <p>For demonstrative purposes, I’ve made a bare bones node express serverless app which you can refer to <a href="https://github.com/sjbitcode/serverless-express-example" target="_blank">here</a>. For the remainder of this article, I’ll be referencing this project.</p>
 
 <p>The folder structure looks like this:</p>
@@ -469,8 +466,7 @@ header::after {
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-</noscript>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
 
 	  <script>
@@ -507,7 +503,11 @@ header::after {
       
       
       <br>
-      Sangeeta Jadoonanan © <script>new Date().getFullYear()&&document.write(new Date().getFullYear());</script>  • <a href="https://github.com/stijnvc/holo-alfa" target="_blank">Holo Alfa</a> theme ❤️
+      <a href="https://www.buymeacoffee.com/sjbitcode" target="_blank">
+        <img src="/images/buymeacoffee.png" alt="Buy Me A Coffee" style="height: 30px !important; padding: 8px 0;" >
+      </a>
+      Sangeeta Jadoonanan &copy; <script>new Date().getFullYear()&&document.write(new Date().getFullYear());</script>  • <a href="https://github.com/stijnvc/holo-alfa" target="_blank">Holo Alfa</a> theme ❤️
+      <br>
     </p>
   </div>
 </footer>

@@ -7,6 +7,19 @@
 		<atom:link href="https://sangeeta.io/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>A Super-Post on Python Inheritance</title>
+				
+					<dc:creator>sangeeta</dc:creator>
+				
+				
+					<description>Understanding inheritance with lots of examples.</description>
+				
+				<pubDate>Tue, 16 Feb 2021 00:00:00 -0500</pubDate>
+				<link>https://sangeeta.io/posts/a-super-post-on-python-inheritance/</link>
+				<guid isPermaLink="true">https://sangeeta.io/posts/a-super-post-on-python-inheritance/</guid>
+			</item>
+		
+			<item>
 				<title>Running Jupyter with Docker</title>
 				
 					<dc:creator>sangeeta</dc:creator>
@@ -20,7 +33,7 @@
 			</item>
 		
 			<item>
-				<title>Managing environments with Express &amp; Serverless</title>
+				<title>Environments with Express &amp; Serverless</title>
 				
 					<dc:creator>sangeeta</dc:creator>
 				

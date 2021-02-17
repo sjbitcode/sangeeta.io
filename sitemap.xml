@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
+        <loc>https://sangeeta.io/posts/a-super-post-on-python-inheritance/</loc>
+    </url>
+    
+    <url>
         <loc>https://sangeeta.io/posts/running-jupyter-with-docker/</loc>
     </url>
     
@@ -77,6 +81,16 @@
     
     
     <url>
+        <loc>https://sangeeta.io/tag/django/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
         <loc>https://sangeeta.io/tag/docker/</loc>
     </url>
     
@@ -119,6 +133,16 @@
     
     
     <url>
+        <loc>https://sangeeta.io/tag/inheritance/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
         <loc>https://sangeeta.io/tag/javascript/</loc>
     </url>
     
@@ -140,6 +164,16 @@
     
     <url>
         <loc>https://sangeeta.io/tag/lambda/</loc>
+    </url>
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://sangeeta.io/tag/mixin/</loc>
     </url>
     
     
@@ -177,6 +211,16 @@
     </url>
     
     
+    
+    
+    
+    
+    
+    
+    
+    <url>
+        <loc>https://sangeeta.io/blog/page/2/</loc>
+    </url>
     
     
     

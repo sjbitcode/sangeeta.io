@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width">
 <title>
 
-sangeeta.io
+Tag: mixin • sangeeta.io
 
 </title>
 <meta name="description" content=" Sangeeta's personal coding blog.">
@@ -23,7 +23,7 @@ sangeeta.io
 
 <!-- og tags -->
 <meta property="og:site_name" content="sangeeta.io">
-<meta property="og:title" content="sangeeta.io">
+<meta property="og:title" content="Tag: mixin • sangeeta.io">
 <meta property="og:locale" content="en">
 
   
@@ -31,7 +31,7 @@ sangeeta.io
   
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://sangeeta.io/">
+<meta property="og:url" content="https://sangeeta.io/tag/mixin/">
 <meta property="og:description" content="
 
 Sangeeta's personal coding blog.
@@ -85,6 +85,20 @@ header::after {
 <!-- -->
 
 
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
 
 
 
@@ -110,102 +124,15 @@ header::after {
 
 </header>
 
-		<div class="banner-container" >
-  <h1 class="intro-text">
-    Hey, I'm Sangeeta! 👋🏼 I'm a software engineer in New York.
-  </h1>
-  <div class="front" style="background-color: #fff35d;"></div>
-  <div class="behind" style="background-color: #ff95d0;"></div>
-</div>
-
-
-<article>
-  <br>
-  <p>
-    Thanks for stopping by to check out my little corner of the web!
-    <br><br>
-    I'm a software engineer with a passion for building full-stack applications with Python and Javascript! I love learning
-    new technologies and exploring the ever changing landscape of software development. 
-    <br><br>
-    In addition to side projects, I also enjoy blogging as a form of documenting interesting or challenging things I've encountered
-    while coding. Feel free to check out my blog to see more.
-    <br>
-    <br>
-  </p>
-</article>
-
-<div class="banner-container-outer">
-  <div class="banner-container">
-    <h1 class="intro-text" style="color: #ffffff;">
-      Check out my recent blog articles ✨
-    </h1>
-    <div class="front" style="background-color: #ff95d0;"></div>
-    <div class="behind" style="background-color: #fff35d;"></div>
+		<div class="post">
+  <h1>mixin</h1>
+  <ul>
+    
+      <li><a href="/posts/a-super-post-on-python-inheritance/">A Super-Post on Python Inheritance</a> (Feb 16, 2021)</li>
+    
+  </ul>
   </div>
-</div>
-
-<br><br>
-
-
-
-
-
-
-  <article>
-    <a href="/posts/a-super-post-on-python-inheritance/"><h1 style="font-size: 1.3em;">A Super-Post on Python Inheritance</h1></a>
-    <span style="display:inline-flex;">
-      <span class="meta-bottom">
-      Feb 16, 2021 • 30&nbsp;min read 📖
-      </span>
-    </span>
-    <p style="margin-top: 5px;">
-      
-        Understanding inheritance with lots of examples.
-      
-    </p>
-  </article>
-
-
-
-
-
-  <article>
-    <a href="/posts/running-jupyter-with-docker/"><h1 style="font-size: 1.3em;">Running Jupyter with Docker</h1></a>
-    <span style="display:inline-flex;">
-      <span class="meta-bottom">
-      Oct 14, 2020 • 11&nbsp;min read 📖
-      </span>
-    </span>
-    <p style="margin-top: 5px;">
-      
-        Tips on running a Jupyter docker image.
-      
-    </p>
-  </article>
-
-
-
-
-
-  <article>
-    <a href="/posts/managing-environments-with-express-serverless/"><h1 style="font-size: 1.3em;">Environments with Express & Serverless</h1></a>
-    <span style="display:inline-flex;">
-      <span class="meta-bottom">
-      May 1, 2019 • 11&nbsp;min read 📖
-      </span>
-    </span>
-    <p style="margin-top: 5px;">
-      
-        Learn to easily manage both dev and prod serverless environments.
-      
-    </p>
-  </article>
-
-
-<article>
-  <a href="/blog" class="read-more">View all articles →</a>
-</article>
-
+<hr>
 	  <script>
 	    $("article").fitVids();
 	    $('article p').each(function(i){

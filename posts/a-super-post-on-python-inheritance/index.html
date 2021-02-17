@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+	<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>
+
+A Super-Post on Python Inheritance • sangeeta.io
+
+</title>
+<meta name="description" content=" Sangeeta's personal coding blog.">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed.xml">
+
+<!-- icons -->
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+<meta name="theme-color" content="#ff95d0">
+<meta name="msapplication-TileColor" content="#ff95d0">
+<meta name="msapplication-TileImage" content="/mstile-150x150.png">
+<!-- /icons -->
+
+<!-- og tags -->
+<meta property="og:site_name" content="sangeeta.io">
+<meta property="og:title" content="A Super-Post on Python Inheritance • sangeeta.io">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="og:image" content="https://sangeeta.io/images/og-image.png">
+  
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sangeeta.io/posts/a-super-post-on-python-inheritance/">
+<meta property="og:description" content="
+
+Sangeeta's personal coding blog.
+">
+<!-- /og tags -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/fitvids.js"></script>
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400,700|Source+Sans+Pro:600,900|Crimson+Text:700italic,600,600italic,400,700,400italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/css/reset.css">
+<link rel="stylesheet" href="/css/pygments.css">
+<link href="/css/syntax.css" rel="stylesheet" >
+
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+<link rel="stylesheet" href="/css/style.css">
+<!--[if gte IE 9]>
+  <style type="text/css">
+    .gradient {
+       filter: none;
+    }
+  </style>
+<![endif]-->
+
+
+  
+
+
+
+
+
+
+
+<!-- Don't show the dot before first article on home page -->
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+<!-- -->
+
+
+<style>
+header {
+  margin-bottom: 40px;
+}
+@media all and (min-width: 500px) {
+  header {
+    margin-bottom: 100px;
+  }
+}
+header::after {
+  display: none;
+}
+</style>
+
+
+
+
+</head>
+<body>
+	
+	<div class="wrap">
+		<header>
+  <a href="/" class="website-title">
+
+    
+    sangeeta.io
+
+  </a>
+  <nav>
+  <a href="/about/">About</a>
+  <a href="/blog/">Blog</a>
+  <a href="/contact/">Contact</a>
+  <a href="/archive/">Archive</a>
+</nav>
+
+</header>
+
+		
+
+
+<article>
+  <span class="meta">Feb 16, 2021 • 30&nbsp;min read</span>
+  <h1>A Super-Post on Python Inheritance</h1>
+  <span class="tag-container">
+    
+        
+        <a href="/tag/python" class="post-tag"><nobr>python</nobr>&nbsp;</a>
+    
+        
+        <a href="/tag/inheritance" class="post-tag"><nobr>inheritance</nobr>&nbsp;</a>
+    
+        
+        <a href="/tag/mixin" class="post-tag"><nobr>mixin</nobr>&nbsp;</a>
+    
+        
+        <a href="/tag/django" class="post-tag"><nobr>django</nobr>&nbsp;</a>
+    
+  </span>
+  <p>Inheritance is an object oriented feature which allows us to reuse logic by defining parent classes that pass on certain behavior to subclasses.</p>
+
+<p>In this article, we’ll cover some examples of inheritance with Python, the use of the <code class="language-plaintext highlighter-rouge">super()</code> function, and some practical examples of inheritance through the use of mixins. The focus will be more on understanding the complexities of multiple inheritance.</p>
+
+<p>Feel free to skip ahead to any section, but I recommend reading in order:</p>
+<ul>
+<li><a href="#inheritance-101-">the basics of Python inheritance - only what you need to know</a> 👨‍👩‍👧‍👦</li>
+<li><a href="#multiple-inheritance-">multiple inheritance - setting the stage</a>  🥞</li>
+<li><a href="#mro-omg-wtf-">what even is MRO - the missing piece of the puzzle</a> 😳</li>
+<li><a href="#super-duper-super-">super() to the rescue - bringing flexibility to inheritance</a> 💥</li>
+<li><a href="#mixins-">using mixins - multi-inheritance minus the confusion</a> 🍪</li>
+<li><a href="#star-wars-mixins-edition">mixins example - Star Wars</a> ⚡️</li>
+<li><a href="#django-mixins-edition-">mixins example - Django</a> 💚</li>
+</ul>
+
+<h3 id="inheritance-101-">Inheritance 101 👨‍👩‍👧‍👦</h3>
+<p>Subclasses inherit all attributes and methods from a parent class if they don’t override them directly.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<p>In this example any Employee instance will have a <code class="language-plaintext highlighter-rouge">name</code> attribute and an <code class="language-plaintext highlighter-rouge">intro</code> method attached to it. Why? Because when we create an Employee instance, it doesn’t define its own <code class="language-plaintext highlighter-rouge">__init__</code> or <code class="language-plaintext highlighter-rouge">intro</code> methods, so it uses its parents’.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="o">&gt;&gt;&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="n">Employee</span><span class="p">(</span><span class="s">'Sangeeta'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">e</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="p">.</span><span class="n">Employee</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x100774520</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">e</span><span class="p">.</span><span class="n">name</span>
+<span class="s">'Sangeeta'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">e</span><span class="p">.</span><span class="n">intro</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Person</span><span class="p">.</span><span class="n">intro</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="p">.</span><span class="n">Employee</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x100774520</span><span class="o">&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">e</span><span class="p">.</span><span class="n">intro</span><span class="p">()</span>
+<span class="s">"Hi I'm Sangeeta!"</span></code></pre></figure>
+
+<hr />
+
+<p>If we <em>did</em> define an empty <code class="language-plaintext highlighter-rouge">__init__</code> method on Employee, then the Person’s <code class="language-plaintext highlighter-rouge">__init__</code> method will never get called, and Employee will never inherit the <code class="language-plaintext highlighter-rouge">name</code> attribute from Person.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></code></pre></figure>
+
+<p>When we create an Employee instance, we still have access to Person’s <code class="language-plaintext highlighter-rouge">intro</code> method, so technically we can set a <code class="language-plaintext highlighter-rouge">name</code> attribute afterwards and call <code class="language-plaintext highlighter-rouge">intro</code> successfully.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> e <span class="o">=</span> Employee<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span> e
+&lt;__main__.Employee object at 0x109bd7640&gt;
+<span class="o">&gt;&gt;&gt;</span> e.intro
+&lt;bound method Person.intro of &lt;__main__.Employee object at 0x109bd7640&gt;&gt;
+<span class="o">&gt;&gt;&gt;</span> e.intro<span class="o">()</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"&lt;stdin&gt;"</span>, line 1, <span class="k">in</span> &lt;module&gt;
+  File <span class="s2">"/Users/sangeeta/Code/pystuff/super.py"</span>, line 111, <span class="k">in </span>intro
+    <span class="k">return </span>f<span class="s1">'Hi I\'</span>m <span class="o">{</span>self.name<span class="o">}!</span><span class="s1">'
+AttributeError: '</span>Employee<span class="s1">' object has no attribute '</span>name<span class="s1">'
+&gt;&gt;&gt;
+&gt;&gt;&gt; e.name = '</span>Sangeeta<span class="s1">'   # Finally setting a name attribute
+&gt;&gt;&gt; e.intro()
+"Hi I'</span>m Sangeeta!<span class="s2">"</span></code></pre></figure>
+
+<hr />
+
+<blockquote>The parent class attributes and methods are inherited by default if they are not explicitly defined in the subclass</blockquote>
+<p>Let’s drive this point home with another example, whereby both Person and Employee’s <code class="language-plaintext highlighter-rouge">__init__</code> set the same <code class="language-plaintext highlighter-rouge">name</code> attribute, but this time the Person’s <code class="language-plaintext highlighter-rouge">name</code> attribute is uppercased.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></code></pre></figure>
+
+<p>Our Employee class uses its own <code class="language-plaintext highlighter-rouge">name</code> attribute, not the Person’s <code class="language-plaintext highlighter-rouge">name</code> attribute.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> e <span class="o">=</span> Employee<span class="o">(</span><span class="s1">'Sangeeta'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> e
+&lt;__main__.Employee object at 0x101a3b640&gt;
+<span class="o">&gt;&gt;&gt;</span> e.name
+<span class="s1">'Sangeeta'</span>
+<span class="o">&gt;&gt;&gt;</span> e.intro<span class="o">()</span>
+<span class="s2">"Hi I'm Sangeeta!"</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> p <span class="o">=</span> Person<span class="o">(</span><span class="s1">'Sangeeta'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> p
+&lt;__main__.Person object at 0x101a3b700&gt;
+<span class="o">&gt;&gt;&gt;</span> p.name
+<span class="s1">'SANGEETA'</span>
+<span class="o">&gt;&gt;&gt;</span> p.intro<span class="o">()</span>
+<span class="s2">"Hi I'm SANGEETA!"</span></code></pre></figure>
+
+<h3 id="multiple-inheritance-">Multiple Inheritance 🥞</h3>
+<p>When a class inherits from multiple classes, its behavior is directly determined by the order of parent classes in the class definition. Let’s take a look at an example first:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="k">class</span> <span class="nc">Pythonista</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s"> and I love Python!'</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Pythonista</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<p>In this example, a call to Employee’s <code class="language-plaintext highlighter-rouge">intro</code> method will call the Person’s <code class="language-plaintext highlighter-rouge">intro</code> method because it is the first class of the inheritance chain (from left to right) that has an <code class="language-plaintext highlighter-rouge">intro</code> method defined. The golden rule is</p>
+<blockquote>
+If a method is called, Python will look for that method in the class. If it doesn't find it, it will look in the next class listed in this fancy thing called the MRO until it finds it. If it doesn't find it in that chain, it will raise an AttributeError.
+</blockquote>
+<p>In this example, Pythonista’s methods will actually never be used since Person defines the same methods as Pythonista. In other words, any call to an Employee instance’s <code class="language-plaintext highlighter-rouge">__init__</code> and <code class="language-plaintext highlighter-rouge">intro</code> will always refer to the Person class.</p>
+
+<h3 id="mro-omg-wtf-">MRO OMG WTF 😳</h3>
+<p>A big part of the inheritance picture for me was understanding that inheritance is always in the context of the MRO. In fact, all the examples we’ve seen so far have been making use of MRO, but now lets take a closer look at what it is and how it works in more complex examples.</p>
+
+<p>In our Employee example, the order of parent classes in the class definition defines the order in which method resolution happens. This is precisely MRO – Method Resolution Order – a list that Python constructs to figure our which parent class to use to lookup a method!</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Pythonista</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Pythonista</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> Employee.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.Employee'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Person'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Pythonista'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span></code></pre></figure>
+
+<p>💡 <em>Bonus tip</em>: Since we are using Python3 for these examples, the Person and Pythonista implicitly inherit from <code class="language-plaintext highlighter-rouge">object</code>, so in fact <code class="language-plaintext highlighter-rouge">class Person: pass</code> is the same as <code class="language-plaintext highlighter-rouge">class Person(object): pass</code>.</p>
+
+<p>There are some intricacies in how the MRO is created. What if Person and Pythonista both inherited from other classes? Let’s look at a different example:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Human</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Human</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Programmer</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Pythonista</span><span class="p">(</span><span class="n">Programmer</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Pythonista</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> Employee.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.Employee'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Person'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Human'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Pythonista'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Programmer'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span></code></pre></figure>
+
+<p>When constructing the MRO, Python uses an algorithm called the <a href="https://en.wikipedia.org/wiki/C3_linearization" target="_blank">C3 linearization algorithm</a> to go through the inheritance chain of each parent class and condense the entire list in a way that conforms to certain constraints. The rule of thumb is that ordering should occur from the most specific class listed down to its parents, and child classes must precede their parents.</p>
+
+<p>Below shows how Employee’s MRO is constructed from the example above:</p>
+
+<p><img src="/images/python-inheritance-example1.gif" alt="Employee inheritance example 1" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<p>As we can see, <code class="language-plaintext highlighter-rouge">object</code> (the parent of all classes in Python) appears twice, so following the rule that children precede parents, the rightmost instance of <code class="language-plaintext highlighter-rouge">object</code> remains and the other duplicate is removed.</p>
+
+<p>Let’s see another example:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Human</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Human</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Pythonista</span><span class="p">(</span><span class="n">Human</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">,</span> <span class="n">Pythonista</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<p>In this case, both Person and Pythonista inherit from the same parent class, so the MRO for Employee would be formed like this:</p>
+
+<p><img src="/images/python-inheritance-example2.gif" alt="Our Employee inheritance example 2" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> Employee.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.Employee'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Person'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Pythonista'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Human'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span></code></pre></figure>
+
+<p>Be mindful that there is a wrong way to inherit, in which Python will throw a nice little TypeError exception at you. Let’s take a look at such a case:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Human</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">Human</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Human</span><span class="p">,</span> <span class="n">Person</span><span class="p">):</span>
+    <span class="k">pass</span></code></pre></figure>
+
+<p>If we try to create an Employee instance, we get hit with this:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"/Users/sangeeta/Code/pystuff/super.py"</span>, line 133, <span class="k">in</span> &lt;module&gt;
+    class Employee<span class="o">(</span>Human, Person<span class="o">)</span>:
+TypeError: Cannot create a consistent method resolution
+order <span class="o">(</span>MRO<span class="o">)</span> <span class="k">for </span>bases Human, Person</code></pre></figure>
+
+<p>With the MRO rule that children precede parents, you’d think the MRO would resolve itself but we run into some problems:</p>
+
+<p><img src="/images/python-inheritance-example3.gif" alt="Our Employee inheritance example 3" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<p>The problem is that Human is a direct parent class of Employee so it cannot be thrown to the right just because Person also subclasses from it; it needs to stay there because its a direct parent. This breaks the other constraint that child classes should precede their parents. In this case, Python cannot satisfy all constraints of the MRO, therefore it throws an exception. Refer to this <a href="https://stackoverflow.com/a/42567588" target="_blank">StackOverflow answer</a> for a more detailed answer to this problem.</p>
+
+<p>If you ever come across this, you should probably reconsider your inheritance choices and logic decisions. Fortunately, Python equips us with a powerful function called <code class="language-plaintext highlighter-rouge">super</code> to give us the ability to call parent methods within child class methods and create better logic flow when subclassing.</p>
+
+<h3 id="super-duper-super-">super duper super 💥</h3>
+<p>Inheritance is great because we inherit functionality from parent classes into our subclasses. As it is, we can either</p>
+<ul>
+  <li>use parent class methods</li>
+  <li>or override methods if we want custom subclass logic</li>
+</ul>
+
+<p>But sometimes, in more real world scenarios, we want both! We want to <em>tap into</em> the parent class’s logic and insert that either before or after our custom logic. We can achieve just that with the <code class="language-plaintext highlighter-rouge">super</code> function.</p>
+
+<p>Calling <code class="language-plaintext highlighter-rouge">super()</code> within a subclass method will lookup the next class in the MRO which has that method defined and call it.</p>
+
+<p>The following example is bit of a no-op illustration of what calling super does. Both implementations of the Employee class behave the same.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="c1">###### Implicit ######
+</span><span class="k">class</span> <span class="nc">Employee1</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="c1">###### Explicit ######
+</span><span class="k">class</span> <span class="nc">Employee2</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">().</span><span class="n">intro</span><span class="p">()</span></code></pre></figure>
+
+<p>In Employee2, we are overriding the <code class="language-plaintext highlighter-rouge">__init__</code> and <code class="language-plaintext highlighter-rouge">intro</code> methods but we are calling super inside each one of them to reference the corresponding parent method. Additionally, we didn’t define any custom logic in those methods, so the behavior is identical to Employee1.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> e1 <span class="o">=</span> Employee1<span class="o">(</span><span class="s1">'Sangeeta'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span> e2 <span class="o">=</span> Employee2<span class="o">(</span><span class="s1">'Sangeeta'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> Employee1.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.Employee1'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Person'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> Employee2.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.Employee2'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.Person'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> e1.intro<span class="o">()</span>
+<span class="s2">"Hi I'm Sangeeta!"</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> e2.intro<span class="o">()</span>
+<span class="s2">"Hi I'm Sangeeta!"</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></figure>
+
+<p>💡 <em>Bonus tip</em>: In Python3, calling <code class="language-plaintext highlighter-rouge">super().intro()</code> is the same as calling super with parameters like so <code class="language-plaintext highlighter-rouge">super(Employee, self).intro()</code>.</p>
+
+<p>Let’s override some methods on the Employee class to have its own functionality while borrowing the needed bits from its parent.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'Hi I</span><span class="se">\'</span><span class="s">m </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="k">class</span> <span class="nc">Employee</span><span class="p">(</span><span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">manager</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span>
+
+    <span class="k">def</span> <span class="nf">intro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">super</span><span class="p">().</span><span class="n">intro</span><span class="p">()</span><span class="si">}</span><span class="s"> I</span><span class="se">\'</span><span class="s">m on the tech team '</span>
+            <span class="sa">f</span><span class="s">'and I report to </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">manager</span><span class="si">}</span><span class="s">.'</span>
+        <span class="p">)</span></code></pre></figure>
+
+<p>In Employee’s <code class="language-plaintext highlighter-rouge">__init__</code> method, we pass on the <code class="language-plaintext highlighter-rouge">name</code> attribute to Person’s <code class="language-plaintext highlighter-rouge">__init__</code> and retain the <code class="language-plaintext highlighter-rouge">manager</code> attribute on Employee. In the Employee’s <code class="language-plaintext highlighter-rouge">intro</code> method, we capture the return value of Person’s <code class="language-plaintext highlighter-rouge">intro</code> call and combine it with some custom message.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> e <span class="o">=</span> Employee<span class="o">(</span><span class="s1">'Sangeeta'</span>, <span class="s1">'Luke Skywalker'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> e.intro<span class="o">()</span>
+<span class="s2">"Hi I'm Sangeeta! I'm on the tech team and I report to Luke Skywalker."</span></code></pre></figure>
+
+<p>Now we’re really getting a sense of how inheritance offers a great deal of composability and code reuse. The ability to hook into parent methods gives us way better control of code execution.</p>
+
+<hr />
+<p>Let’s look at a multiple inheritance example using super. In this example, we have a bunch of classes (A, B, C) that add a single letter to a list. The MoreLetters class extends that list with multiple letters.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'A'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'B'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">add_letter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'C'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MoreLetters</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">add_letter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span><span class="s">'D'</span><span class="p">,</span> <span class="s">'E'</span><span class="p">,</span> <span class="s">'F'</span><span class="p">])</span></code></pre></figure>
+
+<p>The MoreLetters class inherits from C, B, and A in that order.
+Its <code class="language-plaintext highlighter-rouge">add_letter</code> method calls super, which calls C’s <code class="language-plaintext highlighter-rouge">add_letter</code> method.
+C’s <code class="language-plaintext highlighter-rouge">add_letter</code> method also calls super, which <em>does not</em> call A’s <code class="language-plaintext highlighter-rouge">add_letter</code> method, but instead calls the method from the next class in the MRO which is B!</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> m <span class="o">=</span> MoreLetters<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> MoreLetters.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.MoreLetters'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.C'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.B'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.A'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> m.add_letter<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span> print<span class="o">(</span>m.letters<span class="o">)</span>
+<span class="o">[</span><span class="s1">'B'</span>, <span class="s1">'C'</span>, <span class="s1">'D'</span>, <span class="s1">'E'</span>, <span class="s1">'F'</span><span class="o">]</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></figure>
+
+<p><img src="/images/python-inheritance-example4.gif" alt="Our Employee inheritance example 4" /></p>
+<p style="margin-bottom: 60px;"></p>
+<p>We actually never call class A’s <code class="language-plaintext highlighter-rouge">add_letter</code> because the furthest up we reach in the MRO is class B where the method execution stops.</p>
+
+<p>If we wanted to call A’s <code class="language-plaintext highlighter-rouge">add_letter</code>, we can achieve this by adding a super call in class B’s <code class="language-plaintext highlighter-rouge">add_letter</code> method to then bubble up to class A’s <code class="language-plaintext highlighter-rouge">add_letter</code> method. Let’s add it in and see the results:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'A'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">add_letter</span><span class="p">()</span>  <span class="c1"># new
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'B'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">add_letter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'C'</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">MoreLetters</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_letter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">add_letter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">letters</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span><span class="s">'D'</span><span class="p">,</span> <span class="s">'E'</span><span class="p">,</span> <span class="s">'F'</span><span class="p">])</span></code></pre></figure>
+
+<p>Now, we see the letter ‘A’ get appended to our list.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> m <span class="o">=</span> MoreLetters<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span> print<span class="o">(</span>MoreLetters.mro<span class="o">())</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.MoreLetters'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.C'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.B'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'__main__.A'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> m.add_letter<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span> print<span class="o">(</span>m.letters<span class="o">)</span>
+<span class="o">[</span><span class="s1">'A'</span>, <span class="s1">'B'</span>, <span class="s1">'C'</span>, <span class="s1">'D'</span>, <span class="s1">'E'</span>, <span class="s1">'F'</span><span class="o">]</span>
+<span class="o">&gt;&gt;&gt;</span></code></pre></figure>
+
+<p>⚠️ <em>Caution</em>: Having the <code class="language-plaintext highlighter-rouge">super</code> call in class B’s <code class="language-plaintext highlighter-rouge">add_letter</code> method only works because of this specific MRO order (C, B, A). We know beforehand that B’s super call would resolve to A’s <code class="language-plaintext highlighter-rouge">add_letter</code> method.</p>
+
+<p>On the other hand, if we were to create an instance of class B and call the <code class="language-plaintext highlighter-rouge">add_letter</code>, we would get an error because the <code class="language-plaintext highlighter-rouge">object</code> base class has no <code class="language-plaintext highlighter-rouge">add_letter</code> method:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> b <span class="o">=</span> B<span class="o">()</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> B.mro<span class="o">()</span>
+<span class="o">[</span>&lt;class <span class="s1">'__main__.B'</span><span class="o">&gt;</span>, &lt;class <span class="s1">'object'</span><span class="o">&gt;]</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> b.add_letter<span class="o">()</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">"&lt;stdin&gt;"</span>, line 1, <span class="k">in</span> &lt;module&gt;
+  File <span class="s2">"/Users/sangeeta/Code/pystuff/super.py"</span>, line 57, <span class="k">in </span>add_letter
+    super<span class="o">()</span>.add_letter<span class="o">()</span>
+AttributeError: <span class="s1">'super'</span> object has no attribute <span class="s1">'add_letter'</span></code></pre></figure>
+
+<p>Actually, class B is a great example of a mixin because its a standalone class intended to <em>add</em> some additional functionality to other classes and not intended for use on its own.</p>
+
+<h3 id="mixins-">Mixins 🍪</h3>
+<p>Multiple inheritance is a double edged sword, it can become confusing really fast and lead to unexpected results if not understood properly. A practice to avoid such pitfalls is the use of mixin classes implemented through multiple inheritance.</p>
+
+<p>Mixins are classes that offer some specific functionality. There’s nothing special about them, they’re just regular classes, but they are intended to be small, not inheriting from any common parent classes other than <code class="language-plaintext highlighter-rouge">object</code>, and designed for the following reasons:</p>
+<ol>
+  <li>Either to add a lot of optional features for a class</li>
+  <li>Use a particular feature across many classes</li>
+</ol>
+
+<p>Like we saw in the prior example, class B had a <code class="language-plaintext highlighter-rouge">super</code> call in its <code class="language-plaintext highlighter-rouge">add_letter</code> method even though it didn’t inherit from any other classes besides <code class="language-plaintext highlighter-rouge">object</code>. This is because we knew that in the MRO ordering, B’s super call would resolve to A’s <code class="language-plaintext highlighter-rouge">add_letter</code> method.</p>
+
+<p>To summarize, in order for mixins to work effectively, they should always go to the left in a class definition so that they <em>intercept</em> the logic flow first. At this point, the mixin can either extend functionality by calling super or replace that logic entirely. Coincidentally, mixins aren’t meant to be used on their own and rather through multiple inheritance whereby at the time they’re invoked, they have access to other methods and attributes thanks to MRO.</p>
+
+<hr />
+
+<p>Imagine we have a Cookie class which defines some procedural methods for baking cookies. Assume that the general code execution happens by chaining methods together.</p>
+
+<p style="margin-bottom: 40px;"></p>
+<p><img src="/images/cookie_inheritance.gif" alt="Cookie example" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<p>However, we love chocolate so much that we want to make a chocolate chip cookie by leveraging our existing Cookie class! We can use alot of the functionality that our Cookie class offers but just hijack the <code class="language-plaintext highlighter-rouge">mix_ingredients</code> method to secretly add in some chocolate chips to the ingredients before mixing. To do so, we define a ChocolateChipMixin to mix in the chocolate chips (<em>pun intended</em>)! 😉</p>
+
+<p>Finally, we define our ChocolateChipCookie class which inherits from our ChocolateChipMixin and Cookie classes in that order.</p>
+
+<p style="margin-bottom: 40px;"></p>
+<p><img src="/images/chocolatechip_cookie_inheritance.gif" alt="Cookie example" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<p>Yay! Now we can create tasty cookies and chocolate chip cookies thanks to mixins. To brainstorm a little further, imagine the many ways we can use our ChocolateChipMixin class. We can use it in other yummy classes as long as they also define a <code class="language-plaintext highlighter-rouge">mix_ingredients</code> method with the same signature; this can be anything like cakes, milkshakes, banana bread, ice-cream…the possibilities are endless!</p>
+
+<h3 id="star-wars-mixins-edition">Star Wars Mixins Edition</h3>
+
+<p style="margin-top: 60px;"></p>
+<p><img src="https://media.giphy.com/media/2tDQZuljhwHTi/giphy.gif" /></p>
+<p style="margin-bottom: 60px;"></p>
+
+<p>To illustrate another use of mixins, lets look at a Star Wars example for creating different types of Jedi and Sith instances.</p>
+
+<p>We have our ForceUser class which describes someone who is force sensitive. Then we define a couple of mixins; the JediMixin and SithMixin both define custom lightsaber color and the LightsaberMixin uses the predefined lightsaber colors to create a lightsaber for our force user.</p>
+
+<p>Finally we bring everything together by defining our JediMaster and SithLord classes. These two classes override some ForceUser methods to add their own custom logic.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">random</span>
+
+
+<span class="k">class</span> <span class="nc">ForceUser</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">moves</span> <span class="o">=</span> <span class="p">[</span><span class="s">'force push'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">get_ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">moves</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'Attacks with </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">get_ability</span><span class="p">()</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s">'I am </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">, a </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">__class__</span><span class="p">.</span><span class="n">__name__</span><span class="si">}</span><span class="s">!'</span>
+
+
+<span class="c1">######################################
+</span>
+
+<span class="k">class</span> <span class="nc">JediMixin</span><span class="p">:</span>
+    <span class="n">lightsaber_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">'blue'</span><span class="p">,</span> <span class="s">'green'</span><span class="p">,</span> <span class="s">'purple'</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">SithMixin</span><span class="p">:</span>
+    <span class="n">lightsaber_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">'red'</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">LightsaberMixin</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">weapon</span> <span class="o">=</span> <span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">_get_lightsaber_color</span><span class="p">()</span><span class="si">}</span><span class="s"> lightsaber'</span>
+
+    <span class="k">def</span> <span class="nf">_get_lightsaber_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">lightsaber_colors</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">strike</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'Strikes with </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">weapon</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+
+<span class="c1">######################################
+</span>
+
+<span class="k">class</span> <span class="nc">JediMaster</span><span class="p">(</span><span class="n">LightsaberMixin</span><span class="p">,</span> <span class="n">JediMixin</span><span class="p">,</span> <span class="n">ForceUser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">moves</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span><span class="s">'force healing'</span><span class="p">,</span> <span class="s">'wall of light'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'Only a Sith deals in absolutes! 👎🏼'</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">ability</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">SithLord</span><span class="p">(</span><span class="n">SithMixin</span><span class="p">,</span> <span class="n">LightsaberMixin</span><span class="p">,</span> <span class="n">ForceUser</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">moves</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span><span class="s">'force lightning'</span><span class="p">,</span> <span class="s">'force shock'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">ability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'UNLIMITED POWERRRR!!! ⚡️⚡️⚡️'</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">().</span><span class="n">ability</span><span class="p">()</span></code></pre></figure>
+
+<p>See the Sith in action:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> sidious <span class="o">=</span> SithLord<span class="o">(</span><span class="s1">'Darth Sidious'</span><span class="o">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> sidious
+I am Darth Sidious, a SithLord!
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> sidious.ability<span class="o">()</span>
+UNLIMITED POWERRRR!!! ⚡️⚡️⚡️
+Attacks with force lightning
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> sidious.ability<span class="o">()</span>
+UNLIMITED POWERRRR!!! ⚡️⚡️⚡️
+Attacks with force push
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> sidious.strike<span class="o">()</span>
+Strikes with red lightsaber
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> sidious.moves
+<span class="o">[</span><span class="s1">'force push'</span>, <span class="s1">'force lightning'</span>, <span class="s1">'force shock'</span><span class="o">]</span></code></pre></figure>
+
+<p>See the Jedi in action:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> obiwan
+I am Obi-Wan Kenobi, a JediMaster!
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> obiwan.ability<span class="o">()</span>
+Only a Sith deals <span class="k">in </span>absolutes! 👎🏼
+Attacks with force push
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> obiwan.ability<span class="o">()</span>
+Only a Sith deals <span class="k">in </span>absolutes! 👎🏼
+Attacks with wall of light
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> obiwan.strike<span class="o">()</span>
+Strikes with purple lightsaber
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> obiwan.moves
+<span class="o">[</span><span class="s1">'force push'</span>, <span class="s1">'force healing'</span>, <span class="s1">'wall of light'</span><span class="o">]</span></code></pre></figure>
+
+<p>One thing you might have noticed is that the order of the mixins in JediMaster and SithLord are not the same, but they function the same. That’s because the JediMixin and SithMixin classes define the lightsaber colors as class variables.</p>
+
+<p>In inheritance, class variables are shared by all instances of a class, so when we created the instances of JediMaster and SithLord, the LightsaberMixin class already has access to the <code class="language-plaintext highlighter-rouge">lightsaber_colors</code> class variable.</p>
+
+<p>Take this example:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">'Darth Vader'</span>
+
+<span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">C</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'My name is </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s">'</span><span class="p">)</span></code></pre></figure>
+
+<p>Any instance of class C can access the <code class="language-plaintext highlighter-rouge">name</code> class variable directly on itself.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="o">&gt;&gt;&gt;</span> c <span class="o">=</span> C<span class="o">()</span>
+My name is Darth Vader</code></pre></figure>
+
+<h3 id="django-mixins-edition-">Django Mixins Edition 💚</h3>
+
+<p>Now, lets see a real world example using mixins. The <a href="https://www.djangoproject.com/" target="_blank">Django</a> web framework uses a lot of classes and mixins to offer modular functionality you can use in your code – think of them like Lego blocks you can put together. The source code is a great place to take a peek under the hood to see how Django internals work.</p>
+
+<p>Django provides two ways to write views; function based views and class based views. Class based views (CBV’s) provide a lot of default behavior out of the box so you don’t need to spend time re-implementing the same features over and over. We’ll be using a CBV in our example soon!</p>
+
+<p>Hooking into Django CBV’s require some context beforehand. The website <a href="http://ccbv.co.uk/" target="_blank">ccbv.co.uk</a> is an amazing resource for looking up a CBV and deciding which method(s) to override. Here are a few helpful tips to keep in mind when hijacking class methods or writing mixins:</p>
+
+<ol>
+  <li>Figure out data you want to modify and find a method that modifies or returns that data</li>
+  <li>Keep the method signature the same</li>
+  <li>Check if the method returns anything at all, and follow the same pattern</li>
+  <li>If you want to extend functionality, call super first then add your custom logic</li>
+  <li>If you want to replace functionality, add your custom logic and don’t call super 🙂</li>
+</ol>
+
+<hr />
+
+<p>In the following example, we will be using Django’s <a href="http://ccbv.co.uk/projects/Django/3.0/django.views.generic.base/TemplateView/" target="_blank">TemplateView</a> to render an HTML template and define a custom mixin to add a cookie to each page.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># views.py
+</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">TemplateView</span>
+
+
+<span class="k">class</span> <span class="nc">SpyCookieMixin</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">().</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">COOKIES</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'spy-cookie'</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">path</span>
+            <span class="n">response</span><span class="p">.</span><span class="n">set_cookie</span><span class="p">(</span>
+                <span class="s">'spy-cookie'</span><span class="p">,</span> <span class="sa">f</span><span class="s">"I'm watching you on </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">path</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+
+<span class="k">class</span> <span class="nc">HomePageView</span><span class="p">(</span><span class="n">SpyCookieMixin</span><span class="p">,</span> <span class="n">TemplateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">'home.html'</span>
+
+
+<span class="k">class</span> <span class="nc">AboutPageView</span><span class="p">(</span><span class="n">SpyCookieMixin</span><span class="p">,</span> <span class="n">TemplateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">'about.html'</span></code></pre></figure>
+
+<p>Let’s walk through the approach using the tips outlined above.</p>
+
+<p>The purpose of the SpyCookieMixin is to set cookies on the HTTP response object before it gets returned. The best method to get a hold of this is <code class="language-plaintext highlighter-rouge">render_to_response</code> method which returns the HTTP response object.</p>
+
+<p>We create the SpyCookieMixin and override the <code class="language-plaintext highlighter-rouge">render_to_response</code> method with the same exact signature as TemplateView’s <code class="language-plaintext highlighter-rouge">render_to_response</code> method.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">render_to_response</code> method returns the response, so that means when we override it, we need to return the response:</p>
+<p style="margin-top: 20px;"></p>
+<p><img src="/images/render_to_response.png" class="img-dropshadow" style="width: 600px;" /></p>
+<p style="margin-bottom: 40px;"></p>
+
+<p>We want to <em>extend</em> functionality with our mixin, so we store the response returned from the super call first, then modify and return it.</p>
+
+<hr />
+
+<p>Here’s an example of a mixin that replaces functionality instead of extending it:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c1"># views.py
+</span>
+<span class="k">class</span> <span class="nc">SpyContextMixin</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s">'spy-message'</span><span class="p">:</span> <span class="sa">f</span><span class="s">"I'm watching you on </span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">request</span><span class="p">.</span><span class="n">path</span><span class="si">}</span><span class="s">"</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">context</span>
+
+
+<span class="k">class</span> <span class="nc">HomePageView</span><span class="p">(</span><span class="n">SpyContextMixin</span><span class="p">,</span> <span class="n">TemplateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">'home.html'</span></code></pre></figure>
+
+<p>The purpose of the SpyContentMixin is to replace the template context entirely. The best method to get a hold of the context is the <code class="language-plaintext highlighter-rouge">get_context_data</code> method which returns the context dictionary.</p>
+
+<p>We create the SpyContextMixin and override the <code class="language-plaintext highlighter-rouge">get_context_data</code> method with the same exact signature as TemplateView’s <code class="language-plaintext highlighter-rouge">get_context_data</code> method.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">get_context_data</code> method returns the context dictionary, so we must return a context dictionary.</p>
+<p style="margin-top: 20px;"></p>
+<p><img src="/images/get_context_data.png" class="img-dropshadow" style="width: 600px;" /></p>
+<p style="margin-bottom: 40px;"></p>
+
+<p>We want to <em>replace</em> functionality with our mixin, so we simply return our own context dictionary with whatever we want. According to the MRO, our mixin’s <code class="language-plaintext highlighter-rouge">get_context_data</code> method will be the only <code class="language-plaintext highlighter-rouge">get_context_data</code> that ever gets called in our HomePageView. <strong>Be careful</strong> however, replacing internal functionality assumes you know what you’re doing! The last thing we want to do is to erase some part of internal logic we need!</p>
+
+<p>These two examples illustrate the flexibility of mixins through multiple inheritance in Django. This approach requires understanding of the execution flow, and always keep in mind to modify only what you need!</p>
+
+<hr />
+
+<p>Yay, we’ve finally reached the end of this blog post! If you’re still here, thank you for reading! You deserve a cookie! 🍪</p>
+
+<p>I hope these examples helped you better understand Python inheritance, multi-inheritance and its use cases. The order of things explained here is how I’d wish I approached inheritance many years ago.</p>
+
+<p>Understanding inheritance, especially its use cases in real world applications, definitely takes time and practice. One of the most important things to take away is that inheritance always occurs in the context of the MRO; being aware of this will always help you define the big picture.</p>
+
+<p>As much as I love inheritance and think that its a powerful tool, it can get quite confusing sometimes. When in doubt, use your discretion and remember that simple is better than complex…your future self will thank you!</p>
+
+<p>As always, thanks for reading and happy coding! ✨</p>
+
+  <!-- <br><br> -->
+  <!-- 
+    
+      
+        <small><em>Post by: Sangeeta Jadoonanan </em></small>
+      
+    
+   -->
+</article>
+
+<div class="author-footer-container">
+    <hr>
+    <div class="author-footer">
+    
+      <img alt="sangeeta.io" src="/images/sangeeta_profile_pic.jpeg">
+    
+    <p>
+        <strong>Sangeeta Jadoonanan</strong>'s personal blog.
+        All thoughts and opinions are solely mine, please do your own googling and only copy paste from highly upvoted StackOverflow answers 😏
+    </p>
+</div>
+</div>
+
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'https-sangeeta-io'; // Required - Replace '<example>' with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+	  <script>
+	    $("article").fitVids();
+	    $('article p').each(function(i){
+				if (($(this).find('img').length) && (!$.trim($(this).text()).length))  {
+					$(this).addClass('img-only');
+				}
+				if ($.trim($(this).text()).length - $.trim($(this).find('small').text()).length == 0 && ($(this).find('img').length)){
+					$(this).addClass('img-only-source');
+				}
+	  	});
+	  </script>
+	</div>
+	<footer>
+  <div class="inner">
+    <p>
+      <a class="fa fa-twitter" href="http://twitter.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      
+      <a class="fa fa-linkedin" href="http://linkedin.com/in/sjbitcode" target="_blank"></a>
+      <a class="fa fa-github" href="http://github.com/sjbitcode" target="_blank"></a>
+      
+      
+      
+      
+      
+      
+      
+      <br>
+      <a href="https://www.buymeacoffee.com/sjbitcode" target="_blank">
+        <img src="/images/buymeacoffee.png" alt="Buy Me A Coffee" style="height: 30px !important; padding: 8px 0;" >
+      </a>
+      Sangeeta Jadoonanan &copy; <script>new Date().getFullYear()&&document.write(new Date().getFullYear());</script>  • <a href="https://github.com/stijnvc/holo-alfa" target="_blank">Holo Alfa</a> theme ❤️
+      <br>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
